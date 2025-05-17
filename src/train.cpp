@@ -4,7 +4,7 @@ Train::Train() : countOp(0), first(nullptr) {}
 
 Train::~Train() {
    if (first) {
-    Car* currentCar = firs;
+    Car* currentCar = first;
     do {
       Car* tempCar = currentCar->next;
       delete currentCar;
