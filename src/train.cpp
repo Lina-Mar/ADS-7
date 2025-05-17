@@ -3,7 +3,7 @@
 Train::Train() : countOp(0), first(nullptr) {}
 
 Train::~Train() {
-   if (first) {
+  if (first) {
     Car* currentCar = first;
     do {
       Car* tempCar = currentCar->next;
@@ -49,6 +49,10 @@ int Train::getLength() {
       return countedCars + 1;
     }
   }
+}
+
+int Train::getOpCount() {
+  return countOp;
 }
 
 int Train::getOpCount() {
