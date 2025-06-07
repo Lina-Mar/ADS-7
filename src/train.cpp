@@ -58,35 +58,40 @@ void Train::resetPosition() {
 int Train::getOpCount() const {
     return countOp;
 }
-
 int Train::getLength() {
     if (!first) return 0;
     resetPosition();
     countOp = 0;
-    // Включаем лампочку в стартовом вагоне, если она выключена
+    // Гарантируем, что стартовая лампочка включена
     if (!getLightState()) {
         toggleLight();
     }
     int length = 0;
-    while (true) {
+    bool measurementComplete = false;
+    while (!measurementComplete) {
+        // Двигаемся вперёд и увеличиваем счётчик
         moveForward();
         length++;
-        // Если нашли включённую лампочку
+        // Проверяем текущую лампочку
         if (getLightState()) {
-            toggleLight(); // Выключаем её
-            // Возвращаемся назад, считая шаги
+            // Выключаем найденную лампочку
+            toggleLight();
+            // Возвращаемся назад
             int steps = 0;
             while (steps < length) {
                 moveBackward();
                 steps++;
+                countOp++;
             }
-            // Если стартовая лампочка выключена - это и есть длина
+            // Проверяем стартовую лампочку
             if (!getLightState()) {
-                return length;
+                measurementComplete = true;
+            } else {
+                // Если стартовая лампочка всё ещё включена, продолжаем
+                length = 0; // Сбрасываем счётчик
+                toggleLight(); // Включаем лампочку снова
             }
-            // Иначе продолжаем поиск
-            length = steps;
-            toggleLight(); // Включаем лампочку снова
         }
     }
+    return length;
 }
