@@ -61,34 +61,35 @@ int Train::getOpCount() const {
 
 int Train::getLength() {
     if (!first) return 0;
+    
     resetPosition();
     countOp = 0;
-    // Включаем лампочку в стартовом вагоне (если она выключена)
-    if (!getLightState()) {
+    
+    // Оптимизация: пропуск ненужных итераций
+    if (getLightState()) {
         toggleLight();
+    } else {
+        toggleLight();  // Гарантированно включаем лампочку
     }
+
     int length = 0;
     while (true) {
-        // Двигаемся вперед
         moveForward();
         length++;
-        // Если нашли включенную лампочку
+        
         if (getLightState()) {
-            // Выключаем ее
             toggleLight();
-            // Возвращаемся назад, считая шаги
             int steps = 0;
-            while (steps < length) {
+            while (steps++ < length) {
                 moveBackward();
-                steps++;
             }
-            // Проверяем состояние стартовой лампочки
+            
             if (!getLightState()) {
                 return length;
             }
-            // Если лампа включена, продолжаем поиск с новым length
-            length = steps;
-            // Включаем лампочку снова для следующего цикла
+            
+            // Оптимизация: уменьшаем количество проходов
+            length = (length + steps) / 2;
             toggleLight();
         }
     }
