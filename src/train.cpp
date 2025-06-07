@@ -1,5 +1,4 @@
 // Copyright 2021 NNTU-CS
-#include <algorithm>
 #include "train.h"
 
 Train::Train() : countOp(0), first(nullptr), current(nullptr) {}
@@ -68,19 +67,12 @@ int Train::getLength() {
     resetPosition();
     countOp = 0;
     
-    // Алгоритм решения задачи:
-    // 1. Включаем лампочку в начальном вагоне (если она выключена)
-    // 2. Двигаемся вперед, пока не найдем включенную лампочку
-    // 3. Выключаем ее и возвращаемся назад, считая шаги
-    // 4. Если вернулись в начальный вагон с выключенной лампочкой - это длина
-    
     // Включаем лампочку в стартовом вагоне (если она выключена)
     if (!getLightState()) {
         toggleLight();
     }
     
     int length = 0;
-    bool found = false;
     
     while (true) {
         // Двигаемся вперед
