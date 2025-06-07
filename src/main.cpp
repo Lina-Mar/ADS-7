@@ -61,7 +61,7 @@ void experimentRandomLights(int max_n, const string& filename) {
     // Случайное состояние лампочек
     for (int i = 0; i < n; i++) {
       train.addCar(distrib(gen) == 1);
-    }   
+    }
     auto start = high_resolution_clock::now();
     [[maybe_unused]] int calculatedLength = train.getLength();
     auto stop = high_resolution_clock::now();
