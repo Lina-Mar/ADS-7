@@ -61,10 +61,8 @@ int Train::getOpCount() const {
 
 int Train::getLength() {
     if (!first) return 0;
-    
     resetPosition();
     countOp = 0;
-    
     // Оптимизация: пропуск ненужных итераций
     if (getLightState()) {
         toggleLight();
@@ -76,18 +74,15 @@ int Train::getLength() {
     while (true) {
         moveForward();
         length++;
-        
         if (getLightState()) {
             toggleLight();
             int steps = 0;
             while (steps++ < length) {
                 moveBackward();
             }
-            
             if (!getLightState()) {
                 return length;
             }
-            
             // Оптимизация: уменьшаем количество проходов
             length = (length + steps) / 2;
             toggleLight();
