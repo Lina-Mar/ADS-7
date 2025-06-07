@@ -5,7 +5,6 @@ Train::Train() : countOp(0), first(nullptr), current(nullptr) {}
 
 Train::~Train() {
     if (!first) return;
-    
     Car* car = first;
     Car* next;
     do {
@@ -17,7 +16,6 @@ Train::~Train() {
 
 void Train::addCar(bool light) {
     Car* newCar = new Car{light, nullptr, nullptr};
-    
     if (!first) {
         first = newCar;
         first->next = first;
@@ -63,39 +61,31 @@ int Train::getOpCount() const {
 
 int Train::getLength() {
     if (!first) return 0;
-    
     resetPosition();
     countOp = 0;
-    
     // Включаем лампочку в стартовом вагоне (если она выключена)
     if (!getLightState()) {
         toggleLight();
     }
-    
     int length = 0;
-    
     while (true) {
         // Двигаемся вперед
         moveForward();
         length++;
-        
         // Если нашли включенную лампочку
         if (getLightState()) {
             // Выключаем ее
             toggleLight();
-            
             // Возвращаемся назад, считая шаги
             int steps = 0;
             while (steps < length) {
                 moveBackward();
                 steps++;
             }
-            
             // Проверяем состояние стартовой лампочки
             if (!getLightState()) {
                 return length;
             }
-            
             // Если лампа включена, продолжаем поиск с новым length
             length = steps;
             // Включаем лампочку снова для следующего цикла
