@@ -62,35 +62,34 @@ int Train::getLength() {
     if (!first) return 0;
     resetPosition();
     countOp = 0;
-    // Гарантируем, что стартовая лампочка включена
+    // 1. Включаем лампочку в стартовом вагоне (если выключена)
     if (!getLightState()) {
         toggleLight();
     }
     int length = 0;
-    bool measurementComplete = false;
-    while (!measurementComplete) {
-        // Двигаемся вперёд и увеличиваем счётчик
-        moveForward();
-        length++;
-        // Проверяем текущую лампочку
-        if (getLightState()) {
-            // Выключаем найденную лампочку
+    bool found = false;
+    while (!found) {
+        // 2. Двигаемся вперёд, пока не найдём включённую лампочку
+        while (true) {
+            moveForward();
+            length++;
+            if (getLightState()) break;
+        }
+        // 3. Выключаем найденную лампочку
+        toggleLight();
+        // 4. Возвращаемся назад, считая шаги
+        int steps = 0;
+        while (steps < length) {
+            moveBackward();
+            steps++;
+        }
+        // 5. Проверяем стартовую лампочку
+        if (!getLightState()) {
+            found = true;
+        } else {
+            // 6. Если стартовая лампочка включена, продолжаем
+            length = 0;
             toggleLight();
-            // Возвращаемся назад
-            int steps = 0;
-            while (steps < length) {
-                moveBackward();
-                steps++;
-                countOp++;
-            }
-            // Проверяем стартовую лампочку
-            if (!getLightState()) {
-                measurementComplete = true;
-            } else {
-                // Если стартовая лампочка всё ещё включена, продолжаем
-                length = 0; // Сбрасываем счётчик
-                toggleLight(); // Включаем лампочку снова
-            }
         }
     }
     return length;
