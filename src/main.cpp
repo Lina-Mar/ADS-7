@@ -4,6 +4,7 @@
 #include <vector>
 #include <chrono>
 #include <random>
+#include <string>
 #include "train.h"
 
 using std::chrono::duration_cast;
