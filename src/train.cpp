@@ -61,10 +61,8 @@ int Train::getOpCount() const {
 
 int Train::getLength() {
     if (!first) return 0;
-    
     resetPosition();
     countOp = 0;
-    
     // Включаем лампочку в стартовом вагоне, если она выключена
     if (!getLightState()) {
         toggleLight();
