@@ -2,9 +2,6 @@
 #ifndef INCLUDE_TRAIN_H_
 #define INCLUDE_TRAIN_H_
 
-#include <vector>
-#include <random>
-
 class Train {
 private:
     struct Car {
@@ -20,9 +17,10 @@ private:
 public:
     Train();
     ~Train();
+    
     void addCar(bool light); // добавить вагон
     int getLength(); // вычислить длину поезда
-    int getOpCount(); // вернуть число переходов
+    int getOpCount() const; // вернуть число переходов
     
     // Методы для перемещения по поезду
     void moveForward();
@@ -31,4 +29,5 @@ public:
     bool getLightState() const;
     void resetPosition();
 };
+
 #endif  // INCLUDE_TRAIN_H_
