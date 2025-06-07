@@ -1,56 +1,113 @@
 // Copyright 2021 NNTU-CS
+#include <algorithm>
 #include "train.h"
-Train::Train() : countOp(0), first(nullptr) {}
+
+Train::Train() : countOp(0), first(nullptr), current(nullptr) {}
 
 Train::~Train() {
-  if (first) {
-    Car* currentCar = first;
+    if (!first) return;
+    
+    Car* car = first;
+    Car* next;
     do {
-      Car* tempCar = currentCar->next;
-      delete currentCar;
-      currentCar = tempCar;
-    } while (currentCar != first);
-  }
+        next = car->next;
+        delete car;
+        car = next;
+    } while (car != first);
 }
 
 void Train::addCar(bool light) {
-  Car* newCar = new Car{light, nullptr, nullptr};
-  if (!first) {
-    first = newCar;
-    first->next = first;
-    first->prev = first;
-  } else {
-    Car* lastCar = first->prev;
-    lastCar->next = newCar;
-    newCar->prev = lastCar;
-    newCar->next = first;
-    first->prev = newCar;
-  }
+    Car* newCar = new Car{light, nullptr, nullptr};
+    
+    if (!first) {
+        first = newCar;
+        first->next = first;
+        first->prev = first;
+    } else {
+        Car* last = first->prev;
+        last->next = newCar;
+        newCar->prev = last;
+        newCar->next = first;
+        first->prev = newCar;
+    }
+}
+
+void Train::moveForward() {
+    if (!current) current = first;
+    current = current->next;
+    countOp++;
+}
+
+void Train::moveBackward() {
+    if (!current) current = first;
+    current = current->prev;
+    countOp++;
+}
+
+void Train::toggleLight() {
+    if (!current) current = first;
+    current->light = !current->light;
+}
+
+bool Train::getLightState() const {
+    if (!current) return first->light;
+    return current->light;
+}
+
+void Train::resetPosition() {
+    current = first;
+}
+
+int Train::getOpCount() const {
+    return countOp;
 }
 
 int Train::getLength() {
-  countOp = 0;
-  Car* currentCar;
-  while (true) {
-    currentCar = first;
-    int countedCars = 0;
-    if (!currentCar->light) {
-      currentCar->light = true;
+    if (!first) return 0;
+    
+    resetPosition();
+    countOp = 0;
+    
+    // Алгоритм решения задачи:
+    // 1. Включаем лампочку в начальном вагоне (если она выключена)
+    // 2. Двигаемся вперед, пока не найдем включенную лампочку
+    // 3. Выключаем ее и возвращаемся назад, считая шаги
+    // 4. Если вернулись в начальный вагон с выключенной лампочкой - это длина
+    
+    // Включаем лампочку в стартовом вагоне (если она выключена)
+    if (!getLightState()) {
+        toggleLight();
     }
-    currentCar = currentCar->next;
-    countOp += 2;
-    while (!currentCar->light) {
-      currentCar = currentCar->next;
-      countOp += 2;
-      countedCars++;
+    
+    int length = 0;
+    bool found = false;
+    
+    while (true) {
+        // Двигаемся вперед
+        moveForward();
+        length++;
+        
+        // Если нашли включенную лампочку
+        if (getLightState()) {
+            // Выключаем ее
+            toggleLight();
+            
+            // Возвращаемся назад, считая шаги
+            int steps = 0;
+            while (steps < length) {
+                moveBackward();
+                steps++;
+            }
+            
+            // Проверяем состояние стартовой лампочки
+            if (!getLightState()) {
+                return length;
+            }
+            
+            // Если лампа включена, продолжаем поиск с новым length
+            length = steps;
+            // Включаем лампочку снова для следующего цикла
+            toggleLight();
+        }
     }
-    currentCar->light = false;
-    if (!first->light) {
-      return countedCars + 1;
-    }
-  }
-}
-
-int Train::getOpCount() {
-  return countOp;
 }
