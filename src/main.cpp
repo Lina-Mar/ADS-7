@@ -20,7 +20,7 @@ void experimentAllLightsOff(int max_n, const string& filename) {
         }
         
         auto start = high_resolution_clock::now();
-        int calculatedLength = train.getLength();
+        [[maybe_unused]] int calculatedLength = train.getLength();
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         
@@ -41,7 +41,7 @@ void experimentAllLightsOn(int max_n, const string& filename) {
         }
         
         auto start = high_resolution_clock::now();
-        int calculatedLength = train.getLength();
+        [[maybe_unused]] int calculatedLength = train.getLength();
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         
@@ -66,7 +66,7 @@ void experimentRandomLights(int max_n, const string& filename) {
         }
         
         auto start = high_resolution_clock::now();
-        int calculatedLength = train.getLength();
+        [[maybe_unused]] int calculatedLength = train.getLength();
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         
@@ -83,5 +83,6 @@ int main() {
     experimentAllLightsOff(MAX_N, "data_off.txt");
     experimentAllLightsOn(MAX_N, "data_on.txt");
     experimentRandomLights(MAX_N, "data_random.txt");
+    
     return 0;
 }
