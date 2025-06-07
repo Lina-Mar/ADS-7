@@ -82,7 +82,7 @@ int Train::getLength() {
                 steps++;
             }
             // 5. Проверяем стартовую лампочку
-            if ((start_light_was_off && !getLightState()) || 
+            if ((start_light_was_off && !getLightState()) ||
                 (!start_light_was_off && getLightState())) {
                 return length;
             }
