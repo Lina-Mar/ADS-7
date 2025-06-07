@@ -55,7 +55,7 @@ void Train::resetPosition() {
 int Train::getOpCount() const {
     return countOp;
 }
-а если это добавить? int Train::getLength() {
+int Train::getLength() {
   countOp = 0;
   Car* currentCar;
   while (true) {
