@@ -45,52 +45,35 @@ void Train::toggleLight() {
     if (!current) current = first;
     current->light = !current->light;
 }
-
 bool Train::getLightState() const {
     if (!current) return first->light;
     return current->light;
 }
-
 void Train::resetPosition() {
     current = first;
 }
-
 int Train::getOpCount() const {
     return countOp;
 }
-int Train::getLength() {
-    if (!first) return 0;
-    resetPosition();
-    countOp = 0;
-    // 1. Делаем стартовую лампочку уникальной (включаем, если выключена)
-    bool start_light_was_off = !getLightState();
-    if (start_light_was_off) {
-        toggleLight();
+а если это добавить? int Train::getLength() {
+  countOp = 0;
+  Car* currentCar;
+  while (true) {
+    currentCar = first;
+    int countedCars = 0;
+    if (!currentCar->light) {
+      currentCar->light = true;
     }
-    int length = 0;
-    while (true) {
-        // 2. Двигаемся вперёд, пока не найдём включённую лампочку
-        moveForward();
-        length++;
-        if (getLightState()) {
-            // 3. Выключаем найденную лампочку
-            toggleLight();
-            // 4. Возвращаемся назад, считая шаги
-            int steps = 0;
-            while (steps < length) {
-                moveBackward();
-                steps++;
-            }
-            // 5. Проверяем стартовую лампочку
-            if ((start_light_was_off && !getLightState()) ||
-                (!start_light_was_off && getLightState())) {
-                return length;
-            }
-            // 6. Если не совпало, продолжаем поиск
-            length = 0;
-            if (start_light_was_off) {
-                toggleLight(); // Восстанавливаем исходное состояние
-            }
-        }
+    currentCar = currentCar->next;
+    countOp += 2;
+    while (!currentCar->light) {
+      currentCar = currentCar->next;
+      countOp += 2;
+      countedCars++;
     }
+    currentCar->light = false;
+    if (!first->light) {
+      return countedCars + 1;
+    }
+  }
 }
